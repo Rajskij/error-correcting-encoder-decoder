@@ -1,39 +1,32 @@
 package correcter;
 
-import java.util.Random;
+import java.io.*;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
+        File file = new File("send.txt");
+        Scanner sc = new Scanner(file);
+        String str = sc.nextLine();
+        sc.close();
 
-        Scanner sc = new Scanner(System.in);
-        Random random = new Random();
-        char[] text = sc.nextLine().toCharArray();
-        String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789";
-        System.out.println(new String(text));
+        try {
+            FileInputStream inputStream = new FileInputStream("send.txt");
+            FileOutputStream outputStream = new FileOutputStream("received.txt", false);
+            byte[] byteArr = new byte[str.length()];
 
-        char[] longText = new char[text.length * 3];
-        for (int i = 0; i < text.length; i++) {
-            for (int j = 0; j < 3; j++) {
-                longText[i * 3 + j] = text[i];
+            inputStream.read(byteArr);
+            inputStream.close();
+
+            for (int i = 0; i < byteArr.length; i++) {
+                byteArr[i] = (byte) (byteArr[i] ^ 1 << 2);
             }
-        }
-        System.out.println(new String(longText));
 
-        for (int i = 0; i < longText.length; i += 3) {
-            int randIndex = i + random.nextInt(3);
-            if (randIndex < longText.length) {
-                longText[randIndex] = alphabet.charAt(random.nextInt(61));
-            }
+            outputStream.write(byteArr);
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        System.out.println(longText);
 
-        char[] txt = new char[longText.length / 3];
-        for (int i = 0; i < txt.length; i++) {
-            txt[i] = longText[i * 3] == longText[i * 3 + 1] ? longText[i * 3]
-                    : longText[i * 3 + 1] == longText[i * 3 + 2] ? longText[i * 3 + 1]
-                    : longText[i * 3 + 2];
-        }
-        System.out.println(new String(txt));
     }
 }
