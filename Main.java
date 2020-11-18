@@ -20,4 +20,24 @@ public class Main {
                 break;
         }
     }
+    public static String inputFile(String s) throws IOException {
+        String str = "";
+        try (FileInputStream reader = new FileInputStream(s)) {
+            int num = reader.read();
+            while (num != -1) {
+                str += String.format("%8s", Integer.toBinaryString(num))
+                        .replace(" ", "0") + " ";
+                num = reader.read();
+            }
+        }
+        return str;
+    }
+
+    public static void outputFile(String[] arr, String s) throws IOException {
+        try (FileOutputStream outputStream = new FileOutputStream(s, false)) {
+            for (int i = 0; i < arr.length; i++) {
+                outputStream.write((byte) Integer.parseInt(arr[i],2));
+            }
+        }
+    }
 }
